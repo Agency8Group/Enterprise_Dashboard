@@ -49,6 +49,8 @@ document.querySelectorAll('.download-btn').forEach(button => {
 
 // 내부망 다운로드 버튼
 const intranetDownloadBtn = document.querySelector('.intranet-download-btn');
+const intranetGuide = document.querySelector('.intranet-guide');
+const intranetGuideStatus = document.getElementById('intranet-guide-status');
 
 function convertNetworkPathToFileUrl(path) {
     if (!path) return null;
@@ -60,12 +62,41 @@ function convertNetworkPathToFileUrl(path) {
     return `file://${trimmed.replace(/\\/g, '/')}`;
 }
 
+function showIntranetGuide() {
+    if (!intranetGuide) return;
+    intranetGuide.classList.add('visible');
+    intranetGuide.setAttribute('aria-hidden', 'false');
+}
+
+function hideIntranetGuide() {
+    if (!intranetGuide) return;
+    intranetGuide.classList.remove('visible');
+    intranetGuide.setAttribute('aria-hidden', 'true');
+    if (intranetGuideStatus) {
+        intranetGuideStatus.textContent = '';
+        intranetGuideStatus.classList.remove('visible', 'error');
+    }
+}
+
+function updateIntranetGuideStatus(message, isError = false) {
+    if (!intranetGuideStatus) return;
+    intranetGuideStatus.textContent = message;
+    intranetGuideStatus.classList.add('visible');
+    intranetGuideStatus.classList.toggle('error', isError);
+}
+
 if (intranetDownloadBtn) {
     intranetDownloadBtn.addEventListener('click', async function() {
+        if (intranetGuide && intranetGuide.classList.contains('visible')) {
+            hideIntranetGuide();
+            return;
+        }
+        
         const networkPath = this.getAttribute('data-network-path');
         
         if (!networkPath || networkPath.trim() === '') {
-            alert('내부망 공유 폴더 경로가 설정되지 않았습니다.');
+            showIntranetGuide();
+            updateIntranetGuideStatus('내부망 공유 폴더 경로가 설정되지 않았습니다.', true);
             return;
         }
         
@@ -83,14 +114,17 @@ if (intranetDownloadBtn) {
         if (!newWindow) {
             try {
                 await navigator.clipboard.writeText(networkPath);
-                alert('브라우저에서 직접 열 수 없어 경로를 클립보드에 복사했습니다. 탐색기 주소창에 붙여넣어 주세요.');
+                updateIntranetGuideStatus('경로를 클립보드에 복사했습니다. 탐색기 주소창에 붙여넣어 Enter를 눌러 주세요.', false);
             } catch (err) {
-                alert('브라우저 보안 정책으로 직접 열 수 없습니다. 아래 경로를 복사해 파일 탐색기에 입력해 주세요:\n\n' + networkPath);
+                updateIntranetGuideStatus(`브라우저 제한으로 자동 복사가 되지 않았습니다. 아래 경로를 직접 복사해 탐색기에 입력해 주세요: ${networkPath}`, true);
             }
         } else {
             this.classList.add('active');
             setTimeout(() => this.classList.remove('active'), 1000);
+            updateIntranetGuideStatus('탐색기를 새 창으로 여는 중입니다. 열리지 않으면 클립보드를 이용해 접근해 주세요.', false);
         }
+
+        showIntranetGuide();
     });
 }
 
