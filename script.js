@@ -22,6 +22,31 @@ document.querySelectorAll('.download-btn').forEach(button => {
     button.addEventListener('click', function(e) {
         e.stopPropagation();
         const downloadLink = this.getAttribute('data-link');
+        const openMode = this.getAttribute('data-open-mode') || 'direct';
+        const customTitle = this.getAttribute('data-link-title');
+        const fallbackTitle = this.closest('.menu-card')?.querySelector('.card-title')?.textContent || '다운로드';
+        const viewerTitle = customTitle ? `${customTitle}` : `${fallbackTitle} 다운로드`;
+        
+        if (openMode === 'viewer') {
+            if (downloadLink && downloadLink.trim() !== '') {
+                loadUrlInIframe(downloadLink, viewerTitle, true);
+            } else {
+                alert('다운로드 링크를 설정해주세요. Google Drive 파일 링크를 data-link 속성에 추가하세요.');
+            }
+            return;
+        }
+
+        if (openMode === 'tab') {
+            if (downloadLink && downloadLink.trim() !== '') {
+                const opened = window.open(downloadLink, '_blank', 'noopener');
+                if (!opened) {
+                    alert('팝업이 차단되었습니다. 브라우저 팝업 차단을 해제한 후 다시 시도해주세요.');
+                }
+            } else {
+                alert('다운로드 링크를 설정해주세요. Google Drive 파일 링크를 data-link 속성에 추가하세요.');
+            }
+            return;
+        }
         
         if (downloadLink && downloadLink.trim() !== '') {
             // 직접 다운로드를 위해 임시 링크 생성 후 클릭
