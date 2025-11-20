@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="dashboard-container">
+    <div class="dashboard-container" id="dashboard-view">
         <!-- 헤더 -->
         <header class="dashboard-header">
             <div class="header-content">
@@ -163,6 +163,28 @@
     <!-- 배경 효과 -->
     <div class="bg-particles"></div>
     <div class="bg-grid"></div>
+
+    <!-- iframe 뷰어 (숨김 상태) -->
+    <div class="iframe-viewer" id="iframe-view" style="display: none;">
+        <!-- 네비게이션 바 -->
+        <nav class="viewer-nav">
+            <div class="nav-left">
+                <button class="nav-btn home-btn" id="home-btn" title="홈으로">
+                    <i class="fas fa-home"></i>
+                </button>
+            </div>
+            <div class="nav-center">
+                <div class="nav-title" id="nav-title">페이지 로딩 중...</div>
+            </div>
+            <div class="nav-right">
+                <!-- 빈 공간 -->
+            </div>
+        </nav>
+        <!-- iframe 컨테이너 -->
+        <div class="iframe-container">
+            <iframe id="content-iframe" src="" frameborder="0"></iframe>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

@@ -41,21 +41,114 @@ document.querySelectorAll('.download-btn').forEach(button => {
     });
 });
 
+// iframe 뷰어 제어
+const dashboardView = document.getElementById('dashboard-view');
+const iframeView = document.getElementById('iframe-view');
+const contentIframe = document.getElementById('content-iframe');
+const navTitle = document.getElementById('nav-title');
+const homeBtn = document.getElementById('home-btn');
+
+let currentUrl = '';
+let historyStack = [];
+let historyIndex = -1;
+
+// iframe에 URL 로드
+function loadUrlInIframe(url, title, addToHistory = true) {
+    if (!url || url.trim() === '') return;
+    
+    currentUrl = url;
+    contentIframe.src = url;
+    
+    // 제목 설정
+    if (title) {
+        navTitle.textContent = title;
+    } else {
+        navTitle.textContent = '페이지 로딩 중...';
+    }
+    
+    // 히스토리 스택에 추가 (뒤로가기/앞으로가기로 이동할 때는 추가하지 않음)
+    if (addToHistory) {
+        // 현재 위치 이후의 히스토리 제거 (새로운 페이지로 이동)
+        historyStack = historyStack.slice(0, historyIndex + 1);
+        historyStack.push(url);
+        historyIndex = historyStack.length - 1;
+    }
+    
+    // 뷰 전환
+    dashboardView.style.display = 'none';
+    iframeView.style.display = 'flex';
+    
+    // 히스토리 상태 추가
+    pushHistoryState();
+    
+    // 네비게이션 버튼 상태 업데이트 (홈 버튼만 있으므로 불필요)
+    
+    // iframe 로드 완료 시 제목 업데이트
+    contentIframe.onload = function() {
+        try {
+            const iframeDoc = contentIframe.contentDocument || contentIframe.contentWindow.document;
+            const iframeTitle = iframeDoc.title || title || '페이지';
+            navTitle.textContent = iframeTitle;
+        } catch (e) {
+            // CORS 오류 시 원래 제목 유지
+            navTitle.textContent = title || '페이지';
+        }
+    };
+}
+
+// 홈으로 돌아가기
+function goHome() {
+    dashboardView.style.display = 'flex';
+    iframeView.style.display = 'none';
+    contentIframe.src = '';
+    currentUrl = '';
+    historyStack = [];
+    historyIndex = -1;
+    pushHistoryState();
+}
+
+// 네비게이션 버튼 상태 업데이트
+function updateNavButtons() {
+    // 홈 버튼만 있으므로 업데이트 불필요
+}
+
+// 홈으로
+homeBtn.addEventListener('click', goHome);
+
+// 브라우저 뒤로가기/앞으로가기 제어
+window.addEventListener('popstate', function(event) {
+    // 브라우저 뒤로가기/앞으로가기를 막고 앱 내 네비게이션 사용
+    if (iframeView.style.display !== 'none') {
+        event.preventDefault();
+        goHome();
+    }
+});
+
+// 히스토리 상태 추가 (브라우저 뒤로가기 방지)
+function pushHistoryState() {
+    if (iframeView.style.display !== 'none') {
+        history.pushState({ page: 'iframe' }, '', '#iframe');
+    } else {
+        history.pushState({ page: 'dashboard' }, '', '#dashboard');
+    }
+}
+
 // 링크 카드 클릭 이벤트
 document.querySelectorAll('.link-card').forEach(card => {
     card.addEventListener('click', function() {
         const url = this.getAttribute('data-url');
+        const title = this.querySelector('.link-title').textContent;
         
         if (url && url.trim() !== '') {
-            window.open(url, '_blank');
+            // 새로운 페이지 로드 시 히스토리 초기화하지 않고 추가
+            loadUrlInIframe(url, title, true);
         } else {
             // URL이 설정되지 않은 경우
-            const title = this.querySelector('.link-title').textContent;
             const urlInput = prompt(`${title}의 URL을 입력해주세요:`, 'https://');
             
             if (urlInput && urlInput.trim() !== '') {
                 this.setAttribute('data-url', urlInput);
-                window.open(urlInput, '_blank');
+                loadUrlInIframe(urlInput, title, true);
             }
         }
     });
@@ -65,17 +158,17 @@ document.querySelectorAll('.link-card').forEach(card => {
 document.querySelectorAll('.brand-card').forEach(card => {
     card.addEventListener('click', function() {
         const url = this.getAttribute('data-url');
+        const title = this.querySelector('.brand-title').textContent;
         
         if (url && url.trim() !== '') {
-            window.open(url, '_blank');
+            loadUrlInIframe(url, title, true);
         } else {
             // URL이 설정되지 않은 경우
-            const title = this.querySelector('.brand-title').textContent;
             const urlInput = prompt(`${title} 브랜드 사이트의 URL을 입력해주세요:`, 'https://');
             
             if (urlInput && urlInput.trim() !== '') {
                 this.setAttribute('data-url', urlInput);
-                window.open(urlInput, '_blank');
+                loadUrlInIframe(urlInput, title, true);
             }
         }
     });
@@ -91,6 +184,11 @@ document.querySelectorAll('.menu-card').forEach(card => {
         this.style.transform = 'translateY(0) scale(1)';
     });
 });
+
+// 초기 히스토리 상태 설정
+if (window.location.hash !== '#iframe') {
+    history.replaceState({ page: 'dashboard' }, '', '#dashboard');
+}
 
 // 페이지 로드 시 페이드인 애니메이션
 document.addEventListener('DOMContentLoaded', function() {
@@ -157,4 +255,5 @@ function setGoogleDriveLink(elementId, fileId) {
 
 // 사용 예시 (필요시 주석 해제하여 사용):
 // setGoogleDriveLink('크로네', 'YOUR_GOOGLE_DRIVE_FILE_ID');
+
 
