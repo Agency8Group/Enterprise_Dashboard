@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 헤더 -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1 class="dashboard-title">
+                    <span class="title-glow">ENTERPRISE</span>
+                    <span class="title-subtitle">DASHBOARD</span>
+                </h1>
+                <div class="header-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">SYSTEM ACTIVE</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 메인 컨텐츠 -->
+        <main class="dashboard-main">
+            <!-- Toolbox 다운로드 섹션 -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <i class="fas fa-toolbox section-icon"></i>
+                    <h2 class="section-title">TOOLBOX DOWNLOAD</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div class="menu-grid">
+                    <div class="menu-card" data-category="toolbox">
+                        <div class="card-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3 class="card-title">크로네</h3>
+                        <p class="card-subtitle">Google Drive Download</p>
+                        <div class="card-overlay">
+                            <button class="download-btn" data-link="https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_1">
+                                <i class="fas fa-cloud-download-alt"></i>
+                                <span>DOWNLOAD</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="menu-card" data-category="toolbox">
+                        <div class="card-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3 class="card-title">압타밀</h3>
+                        <p class="card-subtitle">Google Drive Download</p>
+                        <div class="card-overlay">
+                            <button class="download-btn" data-link="https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_2">
+                                <i class="fas fa-cloud-download-alt"></i>
+                                <span>DOWNLOAD</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="menu-card" data-category="toolbox">
+                        <div class="card-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3 class="card-title">마케팅</h3>
+                        <p class="card-subtitle">Google Drive Download</p>
+                        <div class="card-overlay">
+                            <button class="download-btn" data-link="https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_3">
+                                <i class="fas fa-cloud-download-alt"></i>
+                                <span>DOWNLOAD</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="menu-card" data-category="toolbox">
+                        <div class="card-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3 class="card-title">테스트</h3>
+                        <p class="card-subtitle">Google Drive Download</p>
+                        <div class="card-overlay">
+                            <button class="download-btn" data-link="https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_4">
+                                <i class="fas fa-cloud-download-alt"></i>
+                                <span>DOWNLOAD</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 빠른 링크 섹션 -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <i class="fas fa-link section-icon"></i>
+                    <h2 class="section-title">QUICK LINKS</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div class="link-grid">
+                    <div class="link-card" data-url="https://eibe-technical-request.netlify.app/dashboard.html">
+                        <div class="link-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="link-title">동수 기술 개발 요청</h3>
+                        <p class="link-subtitle">Development Request</p>
+                    </div>
+                    <div class="link-card" data-url="https://www.eibe.co.kr/">
+                        <div class="link-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="link-title">회사 메인 사이트</h3>
+                        <p class="link-subtitle">Company Main Site</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 브랜드 사이트 섹션 -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <i class="fas fa-globe section-icon"></i>
+                    <h2 class="section-title">BRAND SITES</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div class="brand-grid">
+                    <div class="brand-card" data-url="https://www.nutriciastore.co.kr/">
+                        <div class="brand-icon">
+                            <i class="fas fa-cube"></i>
+                        </div>
+                        <h3 class="brand-title">압타밀</h3>
+                    </div>
+                    <div class="brand-card" data-url="https://dreametechkorea.com/">
+                        <div class="brand-icon">
+                            <i class="fas fa-cube"></i>
+                        </div>
+                        <h3 class="brand-title">드리미</h3>
+                    </div>
+                    <div class="brand-card" data-url="https://brand.naver.com/dreame">
+                        <div class="brand-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3 class="brand-title">드리미 판매몰</h3>
+                    </div>
+                    <div class="brand-card" data-url="">
+                        <div class="brand-icon">
+                            <i class="fas fa-cube"></i>
+                        </div>
+                        <h3 class="brand-title">레이레이</h3>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 푸터 -->
+        <footer class="dashboard-footer">
+            <div class="footer-content">
+                <p class="footer-text">© 2025 Enterprise Dashboard. All rights reserved.</p>
+                <div class="footer-links">
+                    <span class="footer-time" id="current-time"></span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 배경 효과 -->
+    <div class="bg-particles"></div>
+    <div class="bg-grid"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
