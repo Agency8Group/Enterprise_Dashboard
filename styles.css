@@ -91,6 +91,15 @@ body {
     align-items: center;
 }
 
+.header-badges {
+    display: flex;
+    flex-direction: row;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
 .dashboard-title {
     display: flex;
     flex-direction: column;
@@ -152,6 +161,16 @@ body {
     font-weight: 600;
     letter-spacing: 0.1em;
     color: var(--text-primary);
+}
+
+.header-indicator--version {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.12);
+}
+
+.version-dot {
+    background: #f97316;
+    box-shadow: 0 0 6px #f97316;
 }
 
 /* 메인 컨텐츠 */
@@ -601,6 +620,14 @@ body {
         flex-direction: column;
         gap: 0.9rem;
         align-items: flex-start;
+    }
+
+    .header-badges {
+        width: 100%;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        gap: 0.4rem;
     }
 
     .title-glow {
