@@ -313,6 +313,46 @@ body {
     transform: scale(0.98);
 }
 
+.intranet-download-wrapper {
+    margin-top: 1.2rem;
+}
+
+.intranet-download-btn {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border-radius: 10px;
+    border: 1px solid var(--accent-primary);
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--text-primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 15px rgba(99, 102, 241, 0.2), 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.intranet-download-btn i {
+    font-size: 1rem;
+}
+
+.intranet-download-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+    box-shadow: inset 0 0 15px rgba(99, 102, 241, 0.3), 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+.intranet-download-btn:active,
+.intranet-download-btn.active {
+    transform: scale(0.99);
+    background: rgba(99, 102, 241, 0.5);
+    box-shadow: inset 0 0 20px rgba(99, 102, 241, 0.4), 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
 /* 링크 그리드 */
 .link-grid {
     display: grid;

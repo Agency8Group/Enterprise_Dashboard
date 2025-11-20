@@ -23,9 +23,15 @@ document.querySelectorAll('.download-btn').forEach(button => {
         e.stopPropagation();
         const downloadLink = this.getAttribute('data-link');
         
-        if (downloadLink && downloadLink !== 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_1') {
-            // 새 창에서 다운로드 링크 열기
-            window.open(downloadLink, '_blank');
+        if (downloadLink && downloadLink.trim() !== '') {
+            // 직접 다운로드를 위해 임시 링크 생성 후 클릭
+            const tempLink = document.createElement('a');
+            tempLink.href = downloadLink;
+            tempLink.rel = 'noopener noreferrer';
+            tempLink.style.display = 'none';
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
             
             // 다운로드 시작 피드백
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>DOWNLOADING...</span>';
@@ -40,6 +46,53 @@ document.querySelectorAll('.download-btn').forEach(button => {
         }
     });
 });
+
+// 내부망 다운로드 버튼
+const intranetDownloadBtn = document.querySelector('.intranet-download-btn');
+
+function convertNetworkPathToFileUrl(path) {
+    if (!path) return null;
+    let trimmed = path.trim();
+    if (trimmed.startsWith('file://')) {
+        return trimmed;
+    }
+    trimmed = trimmed.replace(/^\\\\/, '');
+    return `file://${trimmed.replace(/\\/g, '/')}`;
+}
+
+if (intranetDownloadBtn) {
+    intranetDownloadBtn.addEventListener('click', async function() {
+        const networkPath = this.getAttribute('data-network-path');
+        
+        if (!networkPath || networkPath.trim() === '') {
+            alert('내부망 공유 폴더 경로가 설정되지 않았습니다.');
+            return;
+        }
+        
+        const fileUrl = convertNetworkPathToFileUrl(networkPath);
+        let newWindow = null;
+        
+        if (fileUrl) {
+            try {
+                newWindow = window.open(fileUrl, '_blank', 'noopener');
+            } catch (error) {
+                newWindow = null;
+            }
+        }
+        
+        if (!newWindow) {
+            try {
+                await navigator.clipboard.writeText(networkPath);
+                alert('브라우저에서 직접 열 수 없어 경로를 클립보드에 복사했습니다. 탐색기 주소창에 붙여넣어 주세요.');
+            } catch (err) {
+                alert('브라우저 보안 정책으로 직접 열 수 없습니다. 아래 경로를 복사해 파일 탐색기에 입력해 주세요:\n\n' + networkPath);
+            }
+        } else {
+            this.classList.add('active');
+            setTimeout(() => this.classList.remove('active'), 1000);
+        }
+    });
+}
 
 // iframe 뷰어 제어
 const dashboardView = document.getElementById('dashboard-view');
@@ -159,16 +212,25 @@ document.querySelectorAll('.brand-card').forEach(card => {
     card.addEventListener('click', function() {
         const url = this.getAttribute('data-url');
         const title = this.querySelector('.brand-title').textContent;
+        const openInNewWindow = this.getAttribute('data-new-window') === 'true';
         
         if (url && url.trim() !== '') {
-            loadUrlInIframe(url, title, true);
+            if (openInNewWindow) {
+                window.open(url, '_blank', 'noopener');
+            } else {
+                loadUrlInIframe(url, title, true);
+            }
         } else {
             // URL이 설정되지 않은 경우
             const urlInput = prompt(`${title} 브랜드 사이트의 URL을 입력해주세요:`, 'https://');
             
             if (urlInput && urlInput.trim() !== '') {
                 this.setAttribute('data-url', urlInput);
-                loadUrlInIframe(urlInput, title, true);
+                if (openInNewWindow) {
+                    window.open(urlInput, '_blank', 'noopener');
+                } else {
+                    loadUrlInIframe(urlInput, title, true);
+                }
             }
         }
     });
