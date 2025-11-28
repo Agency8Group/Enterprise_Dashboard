@@ -41,13 +41,9 @@ body {
         radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
-    opacity: 1;
+    opacity: 0;
     animation: pulse 8s ease-in-out infinite;
     transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.bg-particles.entering {
-    opacity: 0;
 }
 
 .bg-particles.loaded {
@@ -66,12 +62,8 @@ body {
     background-size: 30px 30px;
     pointer-events: none;
     z-index: 0;
-    opacity: 1;
-    transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.bg-grid.entering {
     opacity: 0;
+    transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .bg-grid.loaded {
@@ -90,12 +82,8 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    opacity: 1;
-    transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.dashboard-container.entering {
     opacity: 0;
+    transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .dashboard-container.loaded {
@@ -111,12 +99,8 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    opacity: 1;
-    transition: opacity 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.dashboard-header.entering {
     opacity: 0;
+    transition: opacity 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .dashboard-header.loaded {
@@ -224,12 +208,8 @@ body {
 
 .dashboard-section {
     margin-bottom: 2.4rem;
-    opacity: 1;
-    transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.dashboard-section.entering {
     opacity: 0;
+    transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .dashboard-section.loaded {
@@ -279,13 +259,9 @@ body {
     padding: 1.2rem;
     overflow: hidden;
     cursor: pointer;
-    opacity: 1;
+    opacity: 0;
     transition: opacity 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.menu-card.entering {
-    opacity: 0;
 }
 
 .menu-card.loaded {
@@ -520,13 +496,9 @@ body {
     padding: 1.5rem;
     cursor: pointer;
     overflow: hidden;
-    opacity: 1;
+    opacity: 0;
     transition: opacity 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.link-card.entering {
-    opacity: 0;
 }
 
 .link-card.loaded {
@@ -596,13 +568,9 @@ body {
     text-align: center;
     cursor: pointer;
     overflow: hidden;
-    opacity: 1;
+    opacity: 0;
     transition: opacity 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.brand-card.entering {
-    opacity: 0;
 }
 
 .brand-card.loaded {
@@ -669,12 +637,8 @@ body {
     backdrop-filter: blur(10px);
     border-top: 1px solid var(--border-color);
     margin-top: 2.4rem;
-    opacity: 1;
-    transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.dashboard-footer.entering {
     opacity: 0;
+    transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .dashboard-footer.loaded {

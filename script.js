@@ -385,78 +385,58 @@ document.addEventListener('DOMContentLoaded', function() {
     const linkCards = document.querySelectorAll('.link-card');
     const brandCards = document.querySelectorAll('.brand-card');
     
-    // 모든 요소에 entering 클래스 추가 (초기 숨김 상태)
-    if (dashboardContainer) dashboardContainer.classList.add('entering');
-    if (bgParticles) bgParticles.classList.add('entering');
-    if (bgGrid) bgGrid.classList.add('entering');
-    if (header) header.classList.add('entering');
-    sections.forEach(section => section.classList.add('entering'));
-    if (footer) footer.classList.add('entering');
-    menuCards.forEach(card => card.classList.add('entering'));
-    linkCards.forEach(card => card.classList.add('entering'));
-    brandCards.forEach(card => card.classList.add('entering'));
-    
     // 배경 효과 먼저 천천히 나타남
     setTimeout(() => {
         if (bgParticles) {
-            bgParticles.classList.remove('entering');
             bgParticles.classList.add('loaded');
         }
         if (bgGrid) {
-            bgGrid.classList.remove('entering');
             bgGrid.classList.add('loaded');
         }
-    }, 200);
+    }, 100);
     
     // 헤더와 컨테이너가 부드럽게 나타남
     setTimeout(() => {
         if (dashboardContainer) {
-            dashboardContainer.classList.remove('entering');
             dashboardContainer.classList.add('loaded');
         }
         if (header) {
-            header.classList.remove('entering');
             header.classList.add('loaded');
         }
-    }, 400);
+    }, 300);
     
     // 섹션들이 순차적으로 부드럽게 나타남 (간격을 넓게)
     sections.forEach((section, index) => {
         setTimeout(() => {
-            section.classList.remove('entering');
             section.classList.add('loaded');
-        }, 600 + (index * 200));
+        }, 500 + (index * 200));
     });
     
     // 카드들이 섹션 다음에 부드럽게 나타남
     setTimeout(() => {
         menuCards.forEach((card, index) => {
             setTimeout(() => {
-                card.classList.remove('entering');
                 card.classList.add('loaded');
-            }, index * 100);
+            }, index * 80);
         });
         linkCards.forEach((card, index) => {
             setTimeout(() => {
-                card.classList.remove('entering');
                 card.classList.add('loaded');
-            }, index * 100);
+            }, index * 80);
         });
         brandCards.forEach((card, index) => {
             setTimeout(() => {
-                card.classList.remove('entering');
                 card.classList.add('loaded');
-            }, index * 100);
+            }, index * 80);
         });
-    }, 800);
+    }, 700);
     
     // 푸터 마지막에 부드럽게 나타남
     setTimeout(() => {
         if (footer) {
-            footer.classList.remove('entering');
             footer.classList.add('loaded');
         }
-    }, 1000 + (sections.length * 200));
+    }, 900 + (sections.length * 200));
 });
 
 // 키보드 접근성 개선
