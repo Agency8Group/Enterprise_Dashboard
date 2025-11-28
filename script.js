@@ -315,33 +315,86 @@ if (window.location.hash !== '#iframe') {
     history.replaceState({ page: 'dashboard' }, '', '#dashboard');
 }
 
-// 페이지 로드 시 페이드인 애니메이션
+// 페이지 로드 시 웅장한 진입 애니메이션 (애플 스타일)
 document.addEventListener('DOMContentLoaded', function() {
+    const dashboardContainer = document.querySelector('.dashboard-container');
+    const bgParticles = document.querySelector('.bg-particles');
+    const bgGrid = document.querySelector('.bg-grid');
+    const header = document.querySelector('.dashboard-header');
     const sections = document.querySelectorAll('.dashboard-section');
+    const footer = document.querySelector('.dashboard-footer');
+    const menuCards = document.querySelectorAll('.menu-card');
+    const linkCards = document.querySelectorAll('.link-card');
+    const brandCards = document.querySelectorAll('.brand-card');
     
+    // 모든 요소에 entering 클래스 추가 (초기 숨김 상태)
+    if (dashboardContainer) dashboardContainer.classList.add('entering');
+    if (bgParticles) bgParticles.classList.add('entering');
+    if (bgGrid) bgGrid.classList.add('entering');
+    if (header) header.classList.add('entering');
+    sections.forEach(section => section.classList.add('entering'));
+    if (footer) footer.classList.add('entering');
+    menuCards.forEach(card => card.classList.add('entering'));
+    linkCards.forEach(card => card.classList.add('entering'));
+    brandCards.forEach(card => card.classList.add('entering'));
+    
+    // 배경 효과 먼저 나타남
+    setTimeout(() => {
+        if (bgParticles) {
+            bgParticles.classList.remove('entering');
+            bgParticles.classList.add('loaded');
+        }
+        if (bgGrid) {
+            bgGrid.classList.remove('entering');
+            bgGrid.classList.add('loaded');
+        }
+    }, 50);
+    
+    // 전체 컨테이너 페이드인 (배경 다음)
+    setTimeout(() => {
+        if (dashboardContainer) {
+            dashboardContainer.classList.remove('entering');
+            dashboardContainer.classList.add('loaded');
+        }
+    }, 200);
+    
+    // 헤더 나타남
+    setTimeout(() => {
+        if (header) {
+            header.classList.remove('entering');
+            header.classList.add('loaded');
+        }
+    }, 400);
+    
+    // 섹션들이 순차적으로 나타남
     sections.forEach((section, index) => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(30px)';
-        
         setTimeout(() => {
-            section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            section.style.opacity = '1';
-            section.style.transform = 'translateY(0)';
-        }, index * 200);
+            section.classList.remove('entering');
+            section.classList.add('loaded');
+            
+            // 섹션 내부의 카드들도 순차적으로 나타남
+            const sectionMenuCards = section.querySelectorAll('.menu-card');
+            const sectionLinkCards = section.querySelectorAll('.link-card');
+            const sectionBrandCards = section.querySelectorAll('.brand-card');
+            
+            const allCards = [...sectionMenuCards, ...sectionLinkCards, ...sectionBrandCards];
+            
+            allCards.forEach((card, cardIndex) => {
+                setTimeout(() => {
+                    card.classList.remove('entering');
+                    card.classList.add('loaded');
+                }, cardIndex * 80);
+            });
+        }, 600 + (index * 150));
     });
     
-    // 헤더 애니메이션
-    const header = document.querySelector('.dashboard-header');
-    if (header) {
-        header.style.opacity = '0';
-        header.style.transform = 'translateY(-20px)';
-        
-        setTimeout(() => {
-            header.style.transition = 'opacity 1s ease, transform 1s ease';
-            header.style.opacity = '1';
-            header.style.transform = 'translateY(0)';
-        }, 100);
-    }
+    // 푸터 마지막에 나타남
+    setTimeout(() => {
+        if (footer) {
+            footer.classList.remove('entering');
+            footer.classList.add('loaded');
+        }
+    }, 600 + (sections.length * 150) + 200);
 });
 
 // 키보드 접근성 개선
