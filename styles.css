@@ -838,7 +838,8 @@ body {
     width: 100%;
     height: 100%;
     border: none;
-    background: #ffffff;
+    /* 초기/로딩 시 흰 화면 방지 */
+    background: #000000;
 }
 
 /* 대시보드 뷰 숨김 처리 */
