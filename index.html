@@ -187,7 +187,7 @@
         <footer class="dashboard-footer">
             <div class="footer-content">
                 <div class="footer-left">
-                    <p class="footer-text">© 2025 Enterprise Dashboard. All rights reserved.</p>
+                <p class="footer-text">© 2025 Enterprise Dashboard. All rights reserved.</p>
                     <p class="footer-credit">Powered by <span class="credit-name">yoonwhan</span></p>
                 </div>
                 <div class="footer-links">
@@ -220,6 +220,38 @@
         <!-- iframe 컨테이너 -->
         <div class="iframe-container">
             <iframe id="content-iframe" src="" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <!-- 비밀번호 입력 팝업 (아이폰 스타일) -->
+    <div class="password-modal" id="password-modal">
+        <div class="password-modal-overlay"></div>
+        <div class="password-modal-content">
+            <div class="password-modal-header">
+                <h3 class="password-modal-title">비밀번호 입력</h3>
+                <button class="password-modal-close" id="password-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="password-modal-body">
+                <div class="password-input-wrapper">
+                    <input type="password" 
+                           class="password-input" 
+                           id="password-input" 
+                           placeholder="비밀번호를 입력하세요"
+                           autocomplete="off"
+                           maxlength="50">
+                    <button class="password-toggle" id="password-toggle" type="button">
+                        <i class="fas fa-eye" id="password-eye-icon"></i>
+                    </button>
+                </div>
+                <p class="password-hint"># 힌트: 아이베 본사 wifi 비밀번호</p>
+                <p class="password-error" id="password-error"></p>
+            </div>
+            <div class="password-modal-footer">
+                <button class="password-btn password-btn-cancel" id="password-cancel">취소</button>
+                <button class="password-btn password-btn-confirm" id="password-confirm">확인</button>
+            </div>
         </div>
     </div>
 
