@@ -202,6 +202,25 @@ if (passwordModal) {
     });
 }
 
+// 헤더 다운로드 버튼 이벤트
+const headerDownloadBtn = document.querySelector('.header-download-btn');
+if (headerDownloadBtn) {
+    headerDownloadBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const downloadLink = this.getAttribute('data-link');
+        if (downloadLink && downloadLink.trim() !== '') {
+            const tempAnchor = document.createElement('a');
+            tempAnchor.href = downloadLink;
+            tempAnchor.target = '_blank';
+            tempAnchor.rel = 'noopener noreferrer';
+            tempAnchor.style.display = 'none';
+            document.body.appendChild(tempAnchor);
+            tempAnchor.click();
+            document.body.removeChild(tempAnchor);
+        }
+    });
+}
+
 // 다운로드 버튼 이벤트 (비밀번호 모달 표시)
 document.querySelectorAll('.download-btn').forEach(button => {
     button.addEventListener('click', function(e) {
@@ -268,87 +287,6 @@ document.querySelectorAll('.download-btn').forEach(button => {
         }
     });
 });
-
-// 내부망 다운로드 버튼
-const intranetDownloadBtn = document.querySelector('.intranet-download-btn');
-const intranetGuide = document.querySelector('.intranet-guide');
-const intranetGuideStatus = document.getElementById('intranet-guide-status');
-
-function convertNetworkPathToFileUrl(path) {
-    if (!path) return null;
-    let trimmed = path.trim();
-    if (trimmed.startsWith('file://')) {
-        return trimmed;
-    }
-    trimmed = trimmed.replace(/^\\\\/, '');
-    return `file://${trimmed.replace(/\\/g, '/')}`;
-}
-
-function showIntranetGuide() {
-    if (!intranetGuide) return;
-    intranetGuide.classList.add('visible');
-    intranetGuide.setAttribute('aria-hidden', 'false');
-}
-
-function hideIntranetGuide() {
-    if (!intranetGuide) return;
-    intranetGuide.classList.remove('visible');
-    intranetGuide.setAttribute('aria-hidden', 'true');
-    if (intranetGuideStatus) {
-        intranetGuideStatus.textContent = '';
-        intranetGuideStatus.classList.remove('visible', 'error');
-    }
-}
-
-function updateIntranetGuideStatus(message, isError = false) {
-    if (!intranetGuideStatus) return;
-    intranetGuideStatus.textContent = message;
-    intranetGuideStatus.classList.add('visible');
-    intranetGuideStatus.classList.toggle('error', isError);
-}
-
-if (intranetDownloadBtn) {
-    intranetDownloadBtn.addEventListener('click', async function() {
-        if (intranetGuide && intranetGuide.classList.contains('visible')) {
-            hideIntranetGuide();
-            return;
-        }
-        
-        const networkPath = this.getAttribute('data-network-path');
-        
-        if (!networkPath || networkPath.trim() === '') {
-            showIntranetGuide();
-            updateIntranetGuideStatus('내부망 공유 폴더 경로가 설정되지 않았습니다.', true);
-            return;
-        }
-        
-        const fileUrl = convertNetworkPathToFileUrl(networkPath);
-        let newWindow = null;
-        
-        if (fileUrl) {
-            try {
-                newWindow = window.open(fileUrl, '_blank', 'noopener');
-            } catch (error) {
-                newWindow = null;
-            }
-        }
-        
-        if (!newWindow) {
-            try {
-                await navigator.clipboard.writeText(networkPath);
-                updateIntranetGuideStatus('경로를 클립보드에 복사했습니다. 탐색기 주소창에 붙여넣어 Enter를 눌러 주세요.', false);
-            } catch (err) {
-                updateIntranetGuideStatus(`브라우저 제한으로 자동 복사가 되지 않았습니다. 아래 경로를 직접 복사해 탐색기에 입력해 주세요: ${networkPath}`, true);
-            }
-        } else {
-            this.classList.add('active');
-            setTimeout(() => this.classList.remove('active'), 1000);
-            updateIntranetGuideStatus('탐색기를 새 창으로 여는 중입니다. 열리지 않으면 클립보드를 이용해 접근해 주세요.', false);
-        }
-
-        showIntranetGuide();
-    });
-}
 
 // iframe 뷰어 제어
 const dashboardView = document.getElementById('dashboard-view');
