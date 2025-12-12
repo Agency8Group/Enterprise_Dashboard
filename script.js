@@ -32,6 +32,11 @@ const passwordModalClose = document.getElementById('password-modal-close');
 const passwordToggle = document.getElementById('password-toggle');
 const passwordEyeIcon = document.getElementById('password-eye-icon');
 
+// 안내사항 모달 관련 요소
+const guideModal = document.getElementById('guide-modal');
+const guideModalClose = document.getElementById('guide-modal-close');
+const guideConfirm = document.getElementById('guide-confirm');
+
 // 현재 다운로드할 버튼 정보 저장
 let currentDownloadButton = null;
 
@@ -58,12 +63,35 @@ function closePasswordModal() {
     passwordModal.classList.remove('active');
     passwordInput.value = '';
     passwordError.textContent = '';
-    currentDownloadButton = null;
+    // currentDownloadButton은 안내사항 모달에서 사용하므로 null로 설정하지 않음
+}
+
+// 안내사항 모달 표시
+function showGuideModal() {
+    guideModal.classList.add('active');
+    
+    // ESC 키로 닫기
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            closeGuideModal();
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+}
+
+// 안내사항 모달 닫기
+function closeGuideModal() {
+    guideModal.classList.remove('active');
 }
 
 // 비밀번호 확인 및 다운로드 실행
 function executeDownload() {
-    if (!currentDownloadButton) return;
+    if (!currentDownloadButton) {
+        console.error('다운로드 버튼 정보가 없습니다.');
+        alert('다운로드 버튼 정보를 찾을 수 없습니다. 다시 시도해주세요.');
+        return;
+    }
     
     const downloadLink = currentDownloadButton.getAttribute('data-link');
     const openMode = currentDownloadButton.getAttribute('data-open-mode') || 'direct';
@@ -71,7 +99,7 @@ function executeDownload() {
     const fallbackTitle = currentDownloadButton.closest('.menu-card')?.querySelector('.card-title')?.textContent || '다운로드';
     const viewerTitle = customTitle ? `${customTitle}` : `${fallbackTitle} 다운로드`;
     
-    closePasswordModal();
+    closeGuideModal();
     
     if (openMode === 'viewer') {
         if (downloadLink && downloadLink.trim() !== '') {
@@ -84,9 +112,12 @@ function executeDownload() {
 
     if (openMode === 'tab') {
         if (downloadLink && downloadLink.trim() !== '') {
+            // 다운로드만 시도 (새 탭 열기 최소화)
             const tempAnchor = document.createElement('a');
             tempAnchor.href = downloadLink;
-            tempAnchor.target = '_blank';
+            // download 속성 추가로 다운로드만 시도 (외부 도메인이면 브라우저가 새 탭을 열 수 있음)
+            const fileName = downloadLink.split('/').pop().split('?')[0] || 'download';
+            tempAnchor.download = fileName;
             tempAnchor.rel = 'noopener noreferrer';
             tempAnchor.style.display = 'none';
             document.body.appendChild(tempAnchor);
@@ -102,6 +133,9 @@ function executeDownload() {
         // 직접 다운로드를 위해 임시 링크 생성 후 클릭
         const tempLink = document.createElement('a');
         tempLink.href = downloadLink;
+        // download 속성 추가로 다운로드만 시도
+        const fileName = downloadLink.split('/').pop().split('?')[0] || 'download';
+        tempLink.download = fileName;
         tempLink.rel = 'noopener noreferrer';
         tempLink.style.display = 'none';
         document.body.appendChild(tempLink);
@@ -109,15 +143,25 @@ function executeDownload() {
         document.body.removeChild(tempLink);
         
         // 다운로드 시작 피드백
-        currentDownloadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>DOWNLOADING...</span>';
-        currentDownloadButton.style.opacity = '0.7';
+        if (currentDownloadButton) {
+            currentDownloadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>DOWNLOADING...</span>';
+            currentDownloadButton.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                if (currentDownloadButton) {
+                    currentDownloadButton.innerHTML = '<i class="fas fa-cloud-download-alt"></i><span>DOWNLOAD</span>';
+                    currentDownloadButton.style.opacity = '1';
+                }
+            }, 2000);
+        }
         
+        // 다운로드 완료 후 버튼 정보 초기화
         setTimeout(() => {
-            currentDownloadButton.innerHTML = '<i class="fas fa-cloud-download-alt"></i><span>DOWNLOAD</span>';
-            currentDownloadButton.style.opacity = '1';
-        }, 2000);
+            currentDownloadButton = null;
+        }, 3000);
     } else {
         alert('다운로드 링크를 설정해주세요. Google Drive 파일 ID를 data-link 속성에 추가하세요.');
+        currentDownloadButton = null;
     }
 }
 
@@ -153,7 +197,11 @@ function validatePassword() {
 if (passwordConfirm) {
     passwordConfirm.addEventListener('click', function() {
         if (validatePassword()) {
-            executeDownload();
+            // currentDownloadButton을 유지한 채로 모달만 닫기
+            passwordModal.classList.remove('active');
+            passwordInput.value = '';
+            passwordError.textContent = '';
+            showGuideModal();
         }
     });
 }
@@ -171,7 +219,11 @@ if (passwordInput) {
     passwordInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             if (validatePassword()) {
-                executeDownload();
+                // currentDownloadButton을 유지한 채로 모달만 닫기
+                passwordModal.classList.remove('active');
+                passwordInput.value = '';
+                passwordError.textContent = '';
+                showGuideModal();
             }
         }
     });
@@ -201,6 +253,38 @@ if (passwordModal) {
         }
     });
 }
+
+// 안내사항 모달 이벤트 리스너
+if (guideConfirm) {
+    guideConfirm.addEventListener('click', function() {
+        executeDownload();
+    });
+}
+
+if (guideModalClose) {
+    guideModalClose.addEventListener('click', function() {
+        closeGuideModal();
+        currentDownloadButton = null;
+    });
+}
+
+// 안내사항 모달 오버레이 클릭 시 닫기
+if (guideModal) {
+    guideModal.addEventListener('click', function(e) {
+        if (e.target.classList.contains('guide-modal-overlay')) {
+            closeGuideModal();
+            currentDownloadButton = null;
+        }
+    });
+}
+
+// ESC 키로 안내사항 모달 닫기
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && guideModal && guideModal.classList.contains('active')) {
+        closeGuideModal();
+        currentDownloadButton = null;
+    }
+});
 
 // 헤더 다운로드 버튼 이벤트
 const headerDownloadBtn = document.querySelector('.header-download-btn');
@@ -251,9 +335,12 @@ document.querySelectorAll('.download-btn').forEach(button => {
 
             if (openMode === 'tab') {
                 if (downloadLink && downloadLink.trim() !== '') {
+                    // 다운로드만 시도 (새 탭 열기 최소화)
                     const tempAnchor = document.createElement('a');
                     tempAnchor.href = downloadLink;
-                    tempAnchor.target = '_blank';
+                    // download 속성 추가로 다운로드만 시도 (외부 도메인이면 브라우저가 새 탭을 열 수 있음)
+                    const fileName = downloadLink.split('/').pop().split('?')[0] || 'download';
+                    tempAnchor.download = fileName;
                     tempAnchor.rel = 'noopener noreferrer';
                     tempAnchor.style.display = 'none';
                     document.body.appendChild(tempAnchor);
