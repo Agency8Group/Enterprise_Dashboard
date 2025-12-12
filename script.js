@@ -95,10 +95,34 @@ function detectBrowser() {
     return 'unknown';
 }
 
-// 단순하게 새 창으로 다운로드
+// 최소 크기 새 창으로 다운로드하고 자동으로 닫기
 function downloadFile(downloadLink) {
-    // 새 창으로 다운로드 링크 열기
-    window.open(downloadLink, '_blank', 'noopener,noreferrer');
+    // 최소 크기(1x1 픽셀)로 새 창 열기 (화면 밖으로 배치)
+    const downloadWindow = window.open(
+        downloadLink,
+        '_blank',
+        'width=1,height=1,left=-2000,top=-2000,noopener,noreferrer'
+    );
+    
+    if (downloadWindow) {
+        // 창을 화면 밖으로 이동 (보이지 않게)
+        try {
+            downloadWindow.moveTo(-2000, -2000);
+            downloadWindow.resizeTo(1, 1);
+        } catch (e) {
+            // 브라우저 보안 정책으로 이동 불가능할 수 있음
+        }
+        
+        // 다운로드 시작 후 창 자동 닫기
+        // 다운로드가 시작되면 창을 닫아도 다운로드는 계속됨
+        setTimeout(() => {
+            try {
+                downloadWindow.close();
+            } catch (e) {
+                // 창이 이미 닫혔거나 닫을 수 없는 경우
+            }
+        }, 1000); // 1초 후 창 닫기 (다운로드 시작 시간 확보)
+    }
 }
 
 // 비밀번호 확인 및 다운로드 실행
