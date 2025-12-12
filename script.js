@@ -85,6 +85,53 @@ function closeGuideModal() {
     guideModal.classList.remove('active');
 }
 
+// 브라우저 감지
+function detectBrowser() {
+    const userAgent = navigator.userAgent;
+    if (userAgent.indexOf('Edg') > -1) return 'edge';
+    if (userAgent.indexOf('Chrome') > -1) return 'chrome';
+    if (userAgent.indexOf('Firefox') > -1) return 'firefox';
+    if (userAgent.indexOf('Safari') > -1) return 'safari';
+    return 'unknown';
+}
+
+// Chrome으로 다운로드 시도 (Edge에서)
+function tryDownloadWithChrome(downloadLink) {
+    // Chrome 프로토콜 핸들러 시도 (제한적)
+    try {
+        // 방법 1: Chrome 프로토콜 핸들러 (설치된 경우에만 작동)
+        const chromeProtocol = `googlechrome:${downloadLink}`;
+        window.location.href = chromeProtocol;
+        
+        // 실패 시 fallback
+        setTimeout(() => {
+            // 방법 2: 직접 링크로 다운로드 시도
+            const tempAnchor = document.createElement('a');
+            tempAnchor.href = downloadLink;
+            const fileName = downloadLink.split('/').pop().split('?')[0] || 'download.exe';
+            tempAnchor.download = fileName;
+            tempAnchor.target = '_blank';
+            tempAnchor.rel = 'noopener noreferrer';
+            tempAnchor.style.display = 'none';
+            document.body.appendChild(tempAnchor);
+            tempAnchor.click();
+            document.body.removeChild(tempAnchor);
+        }, 100);
+    } catch (error) {
+        // 에러 발생 시 직접 다운로드
+        const tempAnchor = document.createElement('a');
+        tempAnchor.href = downloadLink;
+        const fileName = downloadLink.split('/').pop().split('?')[0] || 'download.exe';
+        tempAnchor.download = fileName;
+        tempAnchor.target = '_blank';
+        tempAnchor.rel = 'noopener noreferrer';
+        tempAnchor.style.display = 'none';
+        document.body.appendChild(tempAnchor);
+        tempAnchor.click();
+        document.body.removeChild(tempAnchor);
+    }
+}
+
 // 비밀번호 확인 및 다운로드 실행
 function executeDownload() {
     if (!currentDownloadButton) {
@@ -101,6 +148,9 @@ function executeDownload() {
     
     closeGuideModal();
     
+    // 브라우저 감지
+    const browser = detectBrowser();
+    
     if (openMode === 'viewer') {
         if (downloadLink && downloadLink.trim() !== '') {
             loadUrlInIframe(downloadLink, viewerTitle, true);
@@ -112,27 +162,22 @@ function executeDownload() {
 
     if (openMode === 'tab') {
         if (downloadLink && downloadLink.trim() !== '') {
-            // Edge 브라우저에서는 새 창에서 열어서 다운로드 시작
-            // 브라우저 보안 정책상 외부 도메인 파일은 자동 다운로드가 제한될 수 있음
-            const tempAnchor = document.createElement('a');
-            tempAnchor.href = downloadLink;
-            const fileName = downloadLink.split('/').pop().split('?')[0] || 'download.exe';
-            tempAnchor.download = fileName;
-            tempAnchor.target = '_blank';
-            tempAnchor.rel = 'noopener noreferrer';
-            tempAnchor.style.display = 'none';
-            document.body.appendChild(tempAnchor);
-            tempAnchor.click();
-            document.body.removeChild(tempAnchor);
-            
-            // Edge 브라우저 안내 (선택적)
-            setTimeout(() => {
-                const isEdge = /Edg/.test(navigator.userAgent);
-                if (isEdge) {
-                    // Edge에서는 다운로드가 시작되지 않을 수 있으므로 안내
-                    console.log('Edge 브라우저에서는 다운로드가 자동으로 시작되지 않을 수 있습니다. 새로 열린 탭에서 다운로드를 진행해주세요.');
-                }
-            }, 500);
+            // Edge 브라우저인 경우 Chrome으로 다운로드 시도
+            if (browser === 'edge') {
+                tryDownloadWithChrome(downloadLink);
+            } else {
+                // Chrome 또는 다른 브라우저에서는 직접 다운로드
+                const tempAnchor = document.createElement('a');
+                tempAnchor.href = downloadLink;
+                const fileName = downloadLink.split('/').pop().split('?')[0] || 'download.exe';
+                tempAnchor.download = fileName;
+                tempAnchor.target = '_blank';
+                tempAnchor.rel = 'noopener noreferrer';
+                tempAnchor.style.display = 'none';
+                document.body.appendChild(tempAnchor);
+                tempAnchor.click();
+                document.body.removeChild(tempAnchor);
+            }
         } else {
             alert('다운로드 링크를 설정해주세요. Google Drive 파일 링크를 data-link 속성에 추가하세요.');
         }
@@ -140,18 +185,22 @@ function executeDownload() {
     }
     
     if (downloadLink && downloadLink.trim() !== '') {
-        // 직접 다운로드를 위해 임시 링크 생성 후 클릭
-        // Edge 브라우저에서는 새 창에서 열어서 다운로드 시작
-        const tempLink = document.createElement('a');
-        tempLink.href = downloadLink;
-        const fileName = downloadLink.split('/').pop().split('?')[0] || 'download.exe';
-        tempLink.download = fileName;
-        tempLink.target = '_blank';
-        tempLink.rel = 'noopener noreferrer';
-        tempLink.style.display = 'none';
-        document.body.appendChild(tempLink);
-        tempLink.click();
-        document.body.removeChild(tempLink);
+        // Edge 브라우저인 경우 Chrome으로 다운로드 시도
+        if (browser === 'edge') {
+            tryDownloadWithChrome(downloadLink);
+        } else {
+            // Chrome 또는 다른 브라우저에서는 직접 다운로드
+            const tempLink = document.createElement('a');
+            tempLink.href = downloadLink;
+            const fileName = downloadLink.split('/').pop().split('?')[0] || 'download.exe';
+            tempLink.download = fileName;
+            tempLink.target = '_blank';
+            tempLink.rel = 'noopener noreferrer';
+            tempLink.style.display = 'none';
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
+        }
         
         // 다운로드 시작 피드백
         if (currentDownloadButton) {
